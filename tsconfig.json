@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "custom-jsx-library",
+
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -20,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "custom-jsx-library/jsx-runtime.d.ts"]
 }
