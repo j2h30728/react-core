@@ -24,7 +24,7 @@ export default defineConfig({
   resolve: {
     alias: {
       // 명시적으로 경로 지정
-      "custom-jsx-library": path.resolve(__dirname, "./custom-jsx-library"),
+      "custom-jsx-library": path.resolve(__dirname, "src/custom-jsx-library"),
     },
   },
   build: {

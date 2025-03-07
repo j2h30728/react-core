@@ -21,7 +21,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "custom-jsx-library/*": ["src/custom-jsx-library/*"],
+      "custom-jsx-library": ["src/custom-jsx-library"]
+    }
   },
-  "include": ["src", "custom-jsx-library/jsx-runtime.d.ts"]
+  "include": ["src"]
 }
