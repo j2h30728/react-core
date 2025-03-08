@@ -1,7 +1,10 @@
-import { ElementType } from "custom-jsx-library/jsx-runtime";
+import { ElementType, JSXProps } from "./types";
 
-export type Key = string | number | bigint | undefined;
+export const createElement = (type: ElementType, props: JSXProps, ..._children: any[]): any => {
+  if (typeof type === "function") {
+    const result = type(props);
+    return createElement(type.name, result.props);
+  }
 
-export const createElement = (type: ElementType, props: any, _children: any[]) => {
   return { type, props };
 };

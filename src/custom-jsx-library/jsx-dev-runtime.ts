@@ -1,4 +1,5 @@
-import { jsx, JSXProps } from "custom-jsx-library/jsx-runtime";
+import { jsx } from "./jsx-runtime";
+import { JSXProps } from "./types";
 
 export function jsxDEV(type: string, config: JSXProps, key: string) {
   return jsx(type, config, key);

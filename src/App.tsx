@@ -3,7 +3,9 @@ const App = () => {
     <div id="app" key="0">
       <h1>Hello</h1>
       <div>
-        <p>중첩구조</p>
+        <p>Nested structure1</p>
+        <p>Nested structure2</p>
+        <p>Nested structure3</p>
       </div>
       <Header />
       <Content />

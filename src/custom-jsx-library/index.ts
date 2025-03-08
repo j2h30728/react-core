@@ -1,3 +1,4 @@
-import { jsx, jsxs, Fragment, JSXProps, ElementType } from "./jsx-runtime";
+import { jsx, jsxs, Fragment } from "./jsx-runtime";
+import { JSXProps, ElementType } from "./types";
 
 export { jsx, jsxs, Fragment, type JSXProps, type ElementType };
