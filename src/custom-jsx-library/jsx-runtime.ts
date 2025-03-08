@@ -1,4 +1,5 @@
-export type ElementType = string;
+import { createElement, Key } from "./core";
+
 export interface JSXProps {
   children?: any;
   [key: string]: any;
@@ -6,21 +7,26 @@ export interface JSXProps {
 
 export interface JSXNode {
   type: ElementType;
-  props: JSXProps;
-  key: string | null;
+  config: JSXProps;
+  key: Key;
 }
-
+export type ElementType = string | Function;
 export type JSXElement = JSXNode | string | number | boolean | null | undefined;
 
-export function jsx(type: string, props: JSXProps, key: string) {
-  return { type, props, key };
-}
+export type JSX = (type: ElementType, config: JSXProps, key?: Key) => any;
 
-export function jsxs(type: string, props: JSXProps, key: string) {
-  return jsx(type, props, key);
-}
-export function jsxDEV(type: string, props: JSXProps, key: string) {
-  return jsx(type, props, key);
-}
+export const jsx: JSX = (type, config, _key) => {
+  const props = { ...config };
+  const children = config.children || [];
+
+  return createElement(type, props, children);
+};
+
+export const jsxs: JSX = (type, config, key) => {
+  return jsx(type, config, key);
+};
+export const jsxDEV: JSX = (type, config, key) => {
+  return jsx(type, config, key);
+};
 
 export const Fragment = Symbol.for("jsx.fragment");

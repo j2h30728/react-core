@@ -5,7 +5,8 @@
       "@babel/plugin-transform-react-jsx",
       {
         "runtime": "automatic",
-        "importSource": "custom-jsx-runtime"
+        "importSource": "custom-jsx-runtime",
+        "development": false
       }
     ]
   ]
