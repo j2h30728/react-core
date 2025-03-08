@@ -13,12 +13,12 @@ export default defineConfig({
             {
               runtime: "automatic",
               importSource: "custom-jsx-library",
+              development: false,
             },
           ],
         ],
       },
-      extensions: [".jsx", ".tsx", ".ts", ".js"],
-      enforce: "pre",
+      filter: /\.[tj]sx?$/,
     }),
   ],
   resolve: {

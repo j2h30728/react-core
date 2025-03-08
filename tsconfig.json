@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "custom-jsx-library",
+    "jsx": "preserve",
 
     "target": "ES2020",
     "useDefineForClassFields": true,
