@@ -1,15 +1,15 @@
 export interface JSXProps {
-  children?: any;
-  [key: string]: any;
+  children?: JSXElement | JSXElement[];
+  [key: string]: unknown;
 }
 
 export interface JSXNode {
   type: ElementType;
-  config: JSXProps;
+  props: JSXProps;
   key: Key;
 }
-export type ElementType = string | Function;
+export type ElementType = keyof HTMLElementTagNameMap | Function | Symbol;
 export type JSXElement = JSXNode | string | number | boolean | null | undefined;
 
-export type JSX = (type: ElementType, config: JSXProps, key?: Key) => any;
+export type JSX = (type: ElementType, props: JSXProps, key?: Key) => JSXNode;
 export type Key = string | number | bigint | undefined;
