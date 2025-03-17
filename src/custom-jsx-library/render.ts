@@ -28,11 +28,23 @@ const appendChildren = (parent: Node, children?: JSXElement | JSXElement[]) => {
   }
 };
 
+const convertStyleName = (camelCase: string): string => {
+  return camelCase.replace(/([A-Z])/g, "-$1").toLowerCase();
+};
+
 const setAttribute = (element: HTMLElement, props: Record<string, any>) => {
   Object.entries(props).forEach(([key, value]) => {
     if (key.startsWith("on") && typeof value === "function") {
       const eventName = key.slice(2).toLowerCase();
       element.addEventListener(eventName, value as EventListener);
+      return;
+    }
+    if (key === "style" && typeof value === "object") {
+      let elementStyle = "";
+      Object.entries(value).forEach(([styleKey, styleValue]) => {
+        elementStyle += `${convertStyleName(styleKey)} : ${styleValue}; `;
+      });
+      element.style.cssText = elementStyle;
       return;
     }
 

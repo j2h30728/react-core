@@ -16,7 +16,7 @@ const App = () => {
 
 const Header = () => {
   return (
-    <h1 key="1" id="header" onClick={() => console.log("header click")}>
+    <h1 key="1" id="header" onClick={() => console.log("header click")} style={{ color: "blue", fontSize: "50px" }}>
       Hello, React Clone!
     </h1>
   );
