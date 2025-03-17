@@ -16,7 +16,7 @@ const App = () => {
 
 const Header = () => {
   return (
-    <h1 key="1" id="header">
+    <h1 key="1" id="header" onClick={() => console.log("header click")}>
       Hello, React Clone!
     </h1>
   );
@@ -27,9 +27,10 @@ const Content = () => {
     <p key="2" id="content">
       This is a simple React Clone.
       <div>
-        <span>content span 1</span>
-        <span>content span 2</span>
+        <span key="content-1">content span 1</span>
+        <span key="content-2">content span 2</span>
       </div>
+      <button onClick={() => console.log("click 했을 때")}>클릭 버튼</button>
     </p>
   );
 };

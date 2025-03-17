@@ -8,43 +8,50 @@ export const createElement = (type: ElementType, props: JSXProps, key: Key): any
   return { type, props, key };
 };
 
-export const renderToString = (vNode: JSXElement): string => {
-  // console.log("vNode", vNode.props.children);
+export const createDOMNode = (vNode: JSXElement): Node => {
   if (vNode === null || vNode === undefined) {
-    return "";
+    return document.createTextNode("");
   }
 
   if (typeof vNode !== "object") {
-    return String(vNode);
+    return document.createTextNode(String(vNode));
   }
 
   const { type, props = {}, key } = vNode;
 
   if (type === Fragment) {
+    const fragment = document.createDocumentFragment();
     const children = props.children || [];
     if (Array.isArray(children)) {
-      return children.map((child) => renderToString(child)).join("");
+      children.forEach((child) => fragment.appendChild(createDOMNode(child)));
+    } else {
+      fragment.appendChild(createDOMNode(children));
     }
-    return renderToString(children);
+    return fragment;
   }
-  const { children, ...withOutChildrenProps } = props;
-  const propsString = Object.entries(withOutChildrenProps)
-    .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
-    .join(" ");
+  const element = document.createElement(type as string);
 
-  if (!children) {
-    return `<${type} ${propsString} />`;
-  }
+  const { children, ...withOutChildrenProps } = props;
+
+  Object.entries(withOutChildrenProps).forEach(([key, value]) => {
+    if (key.startsWith("on") && typeof value === "function") {
+      const eventName = key.slice(2).toLowerCase();
+      element.addEventListener(eventName, value as EventListener);
+      return;
+    }
+
+    element.setAttribute(key, String(value));
+  });
 
   if (Array.isArray(children)) {
-    const childrenString = children.map(renderToString).join("");
-    return `<${type} ${propsString}>${childrenString}</${type}>`;
+    children.forEach((child) => element.appendChild(createDOMNode(child)));
+  } else if (children) {
+    element.appendChild(createDOMNode(children));
   }
 
-  return `<${type} ${propsString}>${renderToString(children)}</${type}>`;
+  return element;
 };
 
 export const render = (vNode: JSXElement, container: HTMLElement): void => {
-  const html = renderToString(vNode);
-  container.innerHTML = html;
+  container.appendChild(createDOMNode(vNode));
 };
