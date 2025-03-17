@@ -1,68 +1,43 @@
-import { useState } from "custom-jsx-library/core";
+import { useState } from "custom-jsx-library";
 
 const App = () => {
-  const [state, setState] = useState(0);
-  const [count1, setCount1] = useState(1);
-  const [count2, setCount2] = useState(2);
-  const [count3, setCount3] = useState(3);
-  console.log(state);
+  const [todos, setTodos] = useState<{ id: string; value: string; complete: boolean }[]>([]);
+
+  const handleClick = (e: SubmitEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const inputElement = form.querySelector("input") as HTMLInputElement;
+    const newTodo = {
+      id: Date(),
+      value: inputElement.value,
+      complete: false,
+    };
+    setTodos((prev) => [...prev, newTodo]);
+  };
+
+  const handleToggleComplete = (e: Event) => {
+    e.stopPropagation();
+    const button = e.target as HTMLButtonElement;
+    const selectedId = button.parentElement!.id;
+    setTodos((prev) => prev.map((todo) => (todo.id === selectedId ? { ...todo, complete: !todo.complete } : todo)));
+  };
+
   return (
-    <div id="app" key="0">
-      <h1>Hello</h1>
-      <div>
-        <p>{state}</p>
-        <p>{count1}</p>
-        <p>{count2}</p>
-        <p>{count3}</p>
-        <button
-          onClick={() => {
-            setState((prev) => prev + 1);
-            setCount1((prev) => prev + 1);
-            setCount2((prev) => prev + 1);
-            setCount3((prev) => prev + 1);
-            setCount3((prev) => prev + 1);
-            setCount3((prev) => prev + 1);
-            setCount3((prev) => prev + 10);
-          }}>
-          카운트 업
-        </button>
-        <p>Nested structure2</p>
-        <p>Nested structure3</p>
-      </div>
-      <Header />
-      <Content />
-      <Test />
+    <div>
+      <h1>TODO APP</h1>
+      <form onSubmit={handleClick}>
+        <input placeholder="todo" />
+        <button>추가</button>
+      </form>
+      <ul>
+        {todos.map((todo) => (
+          <li id={todo.id}>
+            <span style={{ textDecorationLine: todo.complete ? "line-through" : "none" }}>{todo.value}</span>
+            <button onClick={handleToggleComplete}>{todo.complete ? "취소" : "완료"}</button>
+          </li>
+        ))}
+      </ul>
     </div>
-  );
-};
-
-const Header = () => {
-  return (
-    <h1 key="1" id="header" onClick={() => console.log("header click")} style={{ color: "blue", fontSize: "50px" }}>
-      Hello, React Clone!
-    </h1>
-  );
-};
-
-const Content = () => {
-  return (
-    <p key="2" id="content">
-      This is a simple React Clone.
-      <div>
-        <span key="content-1">content span 1</span>
-        <span key="content-2">content span 2</span>
-      </div>
-      <button onClick={() => console.log("click 했을 때")}>클릭 버튼</button>
-    </p>
-  );
-};
-
-const Test = () => {
-  return (
-    <>
-      <h2>Fragment Title</h2>
-      <span>Fragment test</span>
-    </>
   );
 };
 
