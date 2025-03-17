@@ -19,11 +19,11 @@ const createElementNode = (type: string, props: JSXProps) => {
 };
 
 const appendChildren = (parent: Node, children?: JSXElement | JSXElement[]) => {
-  if (!children) return;
+  if (children === "null" || children === "undefined") return;
 
   if (Array.isArray(children)) {
     children.forEach((child) => parent.appendChild(createDOMNode(child)));
-  } else if (children) {
+  } else {
     parent.appendChild(createDOMNode(children));
   }
 };
@@ -57,6 +57,7 @@ export const createDOMNode = (vNode: JSXElement): Node => {
     return document.createTextNode("");
   }
   if (typeof vNode !== "object") {
+    console.log("createTextNode:", vNode, String(vNode));
     return document.createTextNode(String(vNode));
   }
 
@@ -67,6 +68,6 @@ export const createDOMNode = (vNode: JSXElement): Node => {
   return createElementNode(type as string, props);
 };
 
-export const render = (vNode: JSXElement, container: HTMLElement): void => {
+export const renderToDOM = (vNode: JSXElement, container: HTMLElement): void => {
   container.appendChild(createDOMNode(vNode));
 };
