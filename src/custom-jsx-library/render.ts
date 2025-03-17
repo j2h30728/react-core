@@ -57,7 +57,6 @@ export const createDOMNode = (vNode: JSXElement): Node => {
     return document.createTextNode("");
   }
   if (typeof vNode !== "object") {
-    console.log("createTextNode:", vNode, String(vNode));
     return document.createTextNode(String(vNode));
   }
 

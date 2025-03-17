@@ -25,12 +25,12 @@ export function render(component: () => JSXElement, container: HTMLElement): voi
   renderToDOM(vNode, container);
 }
 
-const processUpdateQueue = () => {
-  isUpdateScheduled = false;
-
+const extraCurrentUpdates = () => {
   const currentQueue = [...updateQueue];
   updateQueue = [];
-
+  return currentQueue;
+};
+const groupUpdatesByIndex = (currentQueue: StateUpdate[]) => {
   const updatesByIndex = new Map<number, SetStateAction<any>[]>();
 
   currentQueue.forEach((update) => {
@@ -39,29 +39,46 @@ const processUpdateQueue = () => {
     }
     updatesByIndex.get(update.index)?.push(update.action);
   });
+  return updatesByIndex;
+};
 
+const applyActionsToState = <T>(state: T, actions: SetStateAction<T>[]): T => {
+  let nextState = state;
+
+  for (const action of actions) {
+    nextState = typeof action === "function" ? (action as (prevState: T) => T)(nextState) : action;
+  }
+
+  return nextState;
+};
+
+const applyAllStateUpdates = (updatesByIndex: Map<number, SetStateAction<any>[]>, states: any[]) => {
   let shouldRender = false;
 
   updatesByIndex.forEach((actions, index) => {
-    let nextState = states[index];
-
-    for (const action of actions) {
-      if (typeof action === "function") {
-        nextState = action(nextState);
-      } else {
-        nextState = action;
-      }
-    }
+    let nextState = applyActionsToState(states[index], actions);
 
     if (nextState !== states[index]) {
       states[index] = nextState;
       shouldRender = true;
     }
   });
+  return shouldRender;
+};
 
+const rerenderIfNeeded = (shouldRender: boolean): void => {
   if (shouldRender && currentComponent && currentContainer) {
     render(currentComponent, currentContainer);
   }
+};
+
+const processUpdateQueue = () => {
+  isUpdateScheduled = false;
+  const currentQueue = extraCurrentUpdates();
+  const updatesByIndex = groupUpdatesByIndex(currentQueue);
+  const shouldRender = applyAllStateUpdates(updatesByIndex, states);
+
+  rerenderIfNeeded(shouldRender);
 };
 
 const scheduleUpdate = () => {
