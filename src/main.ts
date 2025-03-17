@@ -1,4 +1,4 @@
-import { render } from "custom-jsx-library/core";
+import { render } from "custom-jsx-library/render";
 import App from "./App";
 
 const appElement = App();
