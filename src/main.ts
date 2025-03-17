@@ -1,7 +1,7 @@
-import { render } from "custom-jsx-library/render";
 import App from "./App";
+import { render } from "custom-jsx-library/core";
 
 const appElement = App();
 console.log(JSON.stringify(appElement, null, 2));
 
-render(appElement, document.getElementById("root")!);
+render(App, document.getElementById("root")!);

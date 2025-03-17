@@ -1,9 +1,31 @@
+import { useState } from "custom-jsx-library/core";
+
 const App = () => {
+  const [state, setState] = useState(0);
+  const [count1, setCount1] = useState(1);
+  const [count2, setCount2] = useState(2);
+  const [count3, setCount3] = useState(3);
+  console.log(state);
   return (
     <div id="app" key="0">
       <h1>Hello</h1>
       <div>
-        <p>Nested structure1</p>
+        <p>{state}</p>
+        <p>{count1}</p>
+        <p>{count2}</p>
+        <p>{count3}</p>
+        <button
+          onClick={() => {
+            setState((prev) => prev + 1);
+            setCount1((prev) => prev + 1);
+            setCount2((prev) => prev + 1);
+            setCount3((prev) => prev + 1);
+            setCount3((prev) => prev + 1);
+            setCount3((prev) => prev + 1);
+            setCount3((prev) => prev + 10);
+          }}>
+          카운트 업
+        </button>
         <p>Nested structure2</p>
         <p>Nested structure3</p>
       </div>
@@ -36,7 +58,12 @@ const Content = () => {
 };
 
 const Test = () => {
-  return <>Fragment test</>;
+  return (
+    <>
+      <h2>Fragment Title</h2>
+      <span>Fragment test</span>
+    </>
+  );
 };
 
 export default App;
