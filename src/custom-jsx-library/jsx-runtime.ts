@@ -1,11 +1,8 @@
 import { createElement } from "./core";
 import { JSX } from "./types";
 
-export const jsx: JSX = (type, config, _key) => {
-  const props = { ...config };
-  const children = config.children || [];
-
-  return createElement(type, props, children);
+export const jsx: JSX = (type, props, key) => {
+  return createElement(type, props, key);
 };
 
 export const jsxs: JSX = (type, config, key) => {
