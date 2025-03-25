@@ -16,4 +16,4 @@ export type Key = string | number | bigint | undefined;
 
 export type SetStateAction<T> = T | ((prevState: T) => T);
 export type Dispatch<A> = (action: A) => void;
-export type StateUpdate = { index: number; action: SetStateAction<any> };
+export type StateUpdate<T> = { index: number; action: SetStateAction<T> };

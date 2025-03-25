@@ -1,5 +1,5 @@
-import { Fragment } from "./jsx-runtime";
-import { JSXElement, JSXProps } from "./types";
+import { Fragment } from "../jsx-runtime";
+import { JSXElement, JSXProps } from "../types";
 
 // 유틸
 const convertStyleName = (camelCase: string): string => {
