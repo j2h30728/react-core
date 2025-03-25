@@ -9,7 +9,7 @@ export interface JSXNode {
   key: Key;
 }
 export type ElementType = keyof HTMLElementTagNameMap | Function | Symbol;
-export type JSXElement = JSXNode | string | number | boolean | null | undefined;
+export type JSXElement = JSXNode | string | number | null | undefined;
 
 export type JSX = (type: ElementType, props: JSXProps, key?: Key) => JSXNode;
 export type Key = string | number | bigint | undefined;

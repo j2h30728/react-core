@@ -2,7 +2,7 @@ import { useState } from "custom-jsx-library";
 
 const App = () => {
   const [todos, setTodos] = useState<{ id: string; value: string; complete: boolean }[]>([]);
-
+  const [count, setCount] = useState(0);
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -28,6 +28,8 @@ const App = () => {
   return (
     <div>
       <h1>TODO APP</h1>
+      <h2>Count: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>증가</button>
       <form onSubmit={handleSubmit}>
         <input name="todoInput" placeholder="todo" />
         <button>추가</button>
