@@ -1,5 +1,5 @@
 import { renderToDOM } from "../renderer/render";
-import { JSXElement, SetStateAction, StateUpdate } from "../types";
+import { Container, JSXElement, SetStateAction, StateUpdate } from "../types";
 
 const createUpdateScheduler = () => {
   const updateQueue: StateUpdate<unknown>[] = [];
@@ -48,30 +48,42 @@ const createStateManager = () => {
   };
 };
 
-const createComponentManager = () => {
-  let currentComponent: (() => JSXElement) | null = null;
-  let currentContainer: HTMLElement | null = null;
+const createRenderManager = () => {
+  let rootComponent: (() => JSXElement) | null = null;
+  let rootContainer: Container | null = null;
+
+  const render = (component: (() => JSXElement) | null = null, container: Container | null = null) => {
+    if (component && container) {
+      rootComponent = component;
+      rootContainer = container;
+    }
+
+    if (!rootComponent || !rootContainer) {
+      return;
+    }
+    stateManager.resetIndex();
+    const nextVDOM = rootComponent();
+    renderToDOM(nextVDOM, rootContainer);
+  };
 
   return {
-    setComponent: (component: () => JSXElement, container: HTMLElement) => {
-      currentComponent = component;
-      currentContainer = container;
+    mount: (component: () => JSXElement, container: Container) => {
+      render(component, container);
     },
-    render: () => {
-      if (currentComponent && currentContainer) {
-        currentContainer.innerHTML = "";
-        renderToDOM(currentComponent(), currentContainer);
-      }
+    update: () => {
+      render();
     },
   };
 };
 
 export const updateScheduler = createUpdateScheduler();
 export const stateManager = createStateManager();
-export const componentManager = createComponentManager();
+export const renderManager = createRenderManager();
 
 export const processUpdates = () => {
   const updates = updateScheduler.extract();
+  if (updates.length === 0) return;
+
   const updatesByIndex = updates.reduce((map, update) => {
     const actions = map.get(update.index) || [];
     map.set(update.index, [...actions, update.action]);
@@ -91,7 +103,10 @@ export const processUpdates = () => {
   });
 
   if (shouldRender) {
-    stateManager.resetIndex();
-    componentManager.render();
+    renderManager.update();
   }
+};
+
+export const render = (component: () => JSXElement, container: Container) => {
+  renderManager.mount(component, container);
 };

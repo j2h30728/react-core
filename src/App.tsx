@@ -19,6 +19,8 @@ const App = () => {
       complete: false,
     };
     setTodos((prev) => [...prev, newTodo]);
+
+    (e.target as HTMLFormElement).reset();
   };
 
   const handleToggleComplete = (id: string) => {
