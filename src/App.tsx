@@ -3,19 +3,19 @@ import { useState } from "custom-jsx-library";
 const App = () => {
   const [todos, setTodos] = useState<{ id: string; value: string; complete: boolean }[]>([]);
   const [count, setCount] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInput = (e: InputEvent) => {
+    const value = (e.target as HTMLInputElement).value;
+    setInputValue(value);
+  };
+
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const value = formData.get("todoInput")?.toString().trim();
-
-    if (!value) {
-      window.alert("입력을 부탁드립니다.");
-      return;
-    }
 
     const newTodo = {
       id: Date.now().toString(),
-      value,
+      value: inputValue,
       complete: false,
     };
     setTodos((prev) => [...prev, newTodo]);
@@ -33,7 +33,7 @@ const App = () => {
       <h2>Count: {count}</h2>
       <button onClick={() => setCount(count + 1)}>증가</button>
       <form onSubmit={handleSubmit}>
-        <input name="todoInput" placeholder="todo" />
+        <input name="todoInput" placeholder="todo" onChange={handleInput} />
         <button>추가</button>
       </form>
       <ul>

@@ -6,20 +6,40 @@ const convertStyleName = (camelCase: string): string => {
   return camelCase.replace(/([A-Z])/g, "-$1").toLowerCase();
 };
 
+const isInputOrTextarea = (element: HTMLElement): boolean => {
+  return element.tagName === "INPUT" || element.tagName === "TEXTAREA";
+};
+
 export const removeEventListener = (element: HTMLElement, props: Record<string, any>): void => {
   Object.keys(props).forEach((key) => {
     if (key.startsWith("on") && typeof props[key] === "function") {
-      const eventName = key.slice(2).toLowerCase();
+      let eventName = key.slice(2).toLowerCase();
+      if (eventName === "change" && isInputOrTextarea(element)) {
+        eventName = "input";
+      }
       element.removeEventListener(eventName, props[key] as EventListener);
     }
   });
 };
 
 export const setAttribute = (element: HTMLElement, props: Record<string, any>): void => {
+  if (!element._eventHandlers) {
+    element._eventHandlers = {};
+  }
   Object.entries(props).forEach(([key, value]) => {
     if (key.startsWith("on") && typeof value === "function") {
-      const eventName = key.slice(2).toLowerCase();
-      element.addEventListener(eventName, value as EventListener);
+      let eventName = key.slice(2).toLowerCase();
+      if (eventName === "change" && isInputOrTextarea(element)) {
+        eventName = "input";
+      }
+
+      if (element._eventHandlers[eventName]) {
+        element.removeEventListener(eventName, element._eventHandlers[eventName]);
+      }
+
+      element.addEventListener(eventName, value);
+      element._eventHandlers[eventName] = value;
+
       return;
     }
 

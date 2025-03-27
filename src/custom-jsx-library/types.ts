@@ -22,3 +22,9 @@ export type Container = HTMLElement & { _vdom?: JSXElement };
 export type SetStateAction<T> = T | ((prevState: T) => T);
 export type Dispatch<A> = (action: A) => void;
 export type StateUpdate<T> = { index: number; action: SetStateAction<T> };
+
+declare global {
+  interface HTMLElement {
+    _eventHandlers: Record<string, EventListener>;
+  }
+}
