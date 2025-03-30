@@ -1,4 +1,5 @@
 import { useState } from "custom-jsx-library";
+import { useEffect } from "custom-jsx-library/core/hooks";
 
 const App = () => {
   const [todos, setTodos] = useState<{ id: string; value: string; complete: boolean }[]>([]);
@@ -26,6 +27,10 @@ const App = () => {
   const handleToggleComplete = (id: string) => {
     setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, complete: !todo.complete } : todo)));
   };
+
+  useEffect(() => {
+    console.log("todos", todos);
+  }, [todos]);
 
   return (
     <div>
