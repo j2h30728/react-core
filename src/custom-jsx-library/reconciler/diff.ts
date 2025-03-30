@@ -18,7 +18,6 @@ const executeComponent = (vNode: JSXNode): JSXElement => {
 const diffProps = (oldProps: JSXProps, newProps: JSXProps): boolean => {
   const { children: oldChildren, ...oldWithoutChildren } = oldProps;
   const { children: newChildren, ...newWithoutChildren } = newProps;
-
   const oldKeys = Object.keys(oldWithoutChildren);
   const newKeys = Object.keys(newWithoutChildren);
 
@@ -35,16 +34,78 @@ const diffProps = (oldProps: JSXProps, newProps: JSXProps): boolean => {
   return false;
 };
 
-const diffChildren = (parent: HTMLElement, oldChildren: JSXElement[], newChildren: JSXElement[]) => {
-  const oldLength = oldChildren.length;
-  const newLength = newChildren.length;
-  const length = Math.max(oldLength, newLength);
+const createKeyMap = (children: JSXElement[]) => {
+  const keyMap = new Map<string, { element: JSXElement; index: number }>();
+  const nonKeyed: { element: JSXElement; index: number }[] = [];
+
+  children.forEach((child, index) => {
+    if (isJSXNode(child) && child.key) {
+      keyMap.set(String(child.key), { element: child, index });
+    } else {
+      nonKeyed.push({ element: child, index });
+    }
+  });
+
+  return { keyMap, nonKeyed };
+};
+
+const diffKeyedChildren = (
+  parent: HTMLElement,
+  oldKeyMap: Map<string, { element: JSXElement; index: number }>,
+  newKeyMap: Map<string, { element: JSXElement; index: number }>
+) => {
+  for (const [key, newChild] of newKeyMap) {
+    const oldChild = oldKeyMap.get(key);
+    if (oldChild) {
+      diff(parent, oldChild.element, newChild.element, oldChild.index);
+    } else {
+      const node = createDOMNode(newChild.element);
+      if (node) {
+        parent.appendChild(node);
+      }
+    }
+  }
+  for (const [key, oldChild] of oldKeyMap) {
+    if (!newKeyMap.has(key)) {
+      const childNode = parent.childNodes[oldChild.index];
+      if (childNode) {
+        parent.removeChild(childNode);
+      }
+    }
+  }
+};
+
+const diffNonKeyedChildren = (
+  parent: HTMLElement,
+  oldNonKeyed: { element: JSXElement; index: number }[],
+  newNonKeyed: { element: JSXElement; index: number }[]
+) => {
+  const length = Math.max(oldNonKeyed.length, newNonKeyed.length);
 
   for (let i = 0; i < length; i++) {
+    const oldChild = oldNonKeyed[i];
+    const newChild = newNonKeyed[i];
     const childNodeIndex = Math.min(i, parent.childNodes.length - 1);
 
-    diff(parent, oldChildren[i], newChildren[i], childNodeIndex >= 0 ? childNodeIndex : 0);
+    if (oldChild && newChild) {
+      diff(parent, oldChild.element, newChild.element, oldChild.index);
+    } else if (newChild) {
+      const node = createDOMNode(newChild.element);
+      if (node) {
+        parent.appendChild(node);
+      }
+    } else if (oldChild && childNodeIndex >= 0) {
+      parent.removeChild(parent.childNodes[childNodeIndex]);
+    }
   }
+};
+
+const diffChildren = (parent: HTMLElement, oldChildren: JSXElement[], newChildren: JSXElement[]) => {
+  const { keyMap: oldKeyMap, nonKeyed: oldNonKeyed } = createKeyMap(oldChildren);
+  const { keyMap: newKeyMap, nonKeyed: newNonKeyed } = createKeyMap(newChildren);
+
+  diffKeyedChildren(parent, oldKeyMap, newKeyMap);
+  diffNonKeyedChildren(parent, oldNonKeyed, newNonKeyed);
 };
 
 export const diff = (
